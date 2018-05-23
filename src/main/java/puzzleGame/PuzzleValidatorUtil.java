@@ -1,21 +1,20 @@
 package puzzleGame;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class PuzzleValidatorUtil {
 
-    ArrayList<PuzzlePiece> solution = new ArrayList<>();
-    int rowNumber;
-    int columnNumber;
+    private ArrayList<PuzzlePiece> solution = new ArrayList<>();
+    private int rowNumber = 0;
+    private int columnNumber = 0;
 
 
     public boolean isValidPuzzle(Map<Integer, PuzzlePiece> pieceList, String outputFilePath) throws IOException {
-
-        int rowNumber = 0;
-        int columnNumber = 0;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(outputFilePath)))) {
 
@@ -28,14 +27,11 @@ public class PuzzleValidatorUtil {
                 for (columnNumber = 0; columnNumber < piecesLine.length; columnNumber++) {
                     //Get piece id
                     int pieceId = Integer.parseInt(piecesLine[columnNumber].trim());
-                    //Get piece shape from Map and add it to the puzzle solution
+                    //Get piece shape from Map and add it to the puzzle solution (sorted array list)
                     solution.add(pieceList.get(pieceId));
                 }
             }
         }
-
-        this.rowNumber = rowNumber;
-        this.columnNumber = columnNumber;
 
         return validateSolution();
     }
@@ -66,6 +62,8 @@ public class PuzzleValidatorUtil {
                 if (solution.get(index).getRight() != 0)
                     return false;
             }
+
+            //TODO: Complete validation of puzzle pieces match
         }
 
         return true;
