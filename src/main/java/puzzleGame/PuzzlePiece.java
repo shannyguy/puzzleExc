@@ -7,7 +7,7 @@ public class PuzzlePiece {
     private int top;
     private int bottom;
 
-    public PuzzlePiece(int id, int left, int right, int top, int bottom){
+    public PuzzlePiece(int left, int right, int top, int bottom){
         this.left = left;
         this.right = right;
         this.top = top;
@@ -28,6 +28,10 @@ public class PuzzlePiece {
 
     public int getBottom(){
         return bottom;
+    }
+
+    public boolean isValid(){
+        return left < 2 && left > -2 && right < 2 && right > -2 && top < 2 && top > -2 && bottom < 2 && bottom > -2;
     }
 
     public void printPiece(){
