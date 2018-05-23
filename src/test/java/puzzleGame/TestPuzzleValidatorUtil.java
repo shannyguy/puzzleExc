@@ -21,8 +21,10 @@ public class TestPuzzleValidatorUtil {
     @BeforeEach
     public void init() {
 
-        puzzleBoard.addPiece(1, 0, 0, -1, 0);
+        puzzleBoard.addPiece(1, 0, 0, -1, 1);
         puzzleBoard.addPiece(2, 1, 0, 0, 0);
+        puzzleBoard.addPiece(3, 0, -1, -1, 0);
+        puzzleBoard.addPiece(4, 1, 0, 0, 0);
 
     }
 

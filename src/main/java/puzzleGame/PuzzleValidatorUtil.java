@@ -40,30 +40,33 @@ public class PuzzleValidatorUtil {
 
         for (int index = 0; index < solution.size(); index++) {
 
-            if (index >= 0 && index < columnNumber) { //First row, top should be 0
+            int row = index / columnNumber;
+            int column = index % columnNumber;
+
+            if (row == 0) { //First row, top should be 0
                 if (solution.get(index).getTop() != 0)
                     return false;
             }
 
-            if (index >= (columnNumber * (rowNumber - 1)) && index <= (columnNumber * rowNumber - 1)) //last row, bottom should be 0
-            {
-                if (solution.get(index).getBottom() != 0)
-                    return false;
-            }
-
-            if (index % columnNumber == 0) //First column, left should be 0
+            if (column == 0) //First column, left should be 0
             {
                 if (solution.get(index).getLeft() != 0)
                     return false;
             }
 
-            if (index != 0 && index % columnNumber == index) //Last column, right should be 0
-            {
-                if (solution.get(index).getRight() != 0)
+            if (column == columnNumber - 1) {
+                if (solution.get(index).getRight() != 0) //Last column, right should be 0
                     return false;
+            } else if (-solution.get(index).getRight() != solution.get(index + 1).getLeft()) {
+                return false;
             }
 
-            //TODO: Complete validation of puzzle pieces match
+            if (row == rowNumber - 1) {
+                if (solution.get(index).getBottom() != 0)
+                    return false;
+            } else if (-solution.get(index).getBottom() != solution.get(index + columnNumber).getTop()) {
+                return false;
+            }
         }
 
         return true;
