@@ -7,11 +7,19 @@ public class PuzzlePiece {
     private int top;
     private int bottom;
 
-    public PuzzlePiece(int left, int right, int top, int bottom){
+    public PuzzlePiece(int left, int top, int right, int bottom){
         this.left = left;
-        this.right = right;
         this.top = top;
+        this.right = right;
         this.bottom = bottom;
+    }
+
+    // Added for TestPuzzleValidator unit tests
+    public PuzzlePiece(PuzzlePiece puzzlePiece){
+        this.left = puzzlePiece.left;
+        this.right = puzzlePiece.right;
+        this.top = puzzlePiece.top;
+        this.bottom = puzzlePiece.bottom;
     }
 
     public int getLeft(){
