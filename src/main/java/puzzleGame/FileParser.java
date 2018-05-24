@@ -1,5 +1,6 @@
 package puzzleGame;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,6 +22,7 @@ public class FileParser {
     public Map<Integer, PuzzlePiece> parse() {
         try {
             String content = new String(Files.readAllBytes(Paths.get(fileName)));
+            new FileOutputStream("puzzle.txt", true).close();
             String contentArr[] = content.split("\\r?\\n");
             numberOfElements = Integer.parseInt(contentArr[0].split("=")[1]);
             for (int i = 1; i < contentArr.length; i++) {
@@ -34,6 +36,7 @@ public class FileParser {
             }
         }
         catch (IOException e) {
+            System.out.println("File doesn't exist!");
             e.printStackTrace();
         }
         System.out.println(piecesMap);
