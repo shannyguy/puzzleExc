@@ -45,4 +45,9 @@ public class PuzzlePiece {
     public void printPiece(){
         System.out.print("[" +left + ", " + right + ", " + top + ", " + bottom + "] ");
     }
+
+    @Override
+    public String toString() {
+        return "PuzzlePiece [left=" + left + ", right=" + right + ", top=" + top + ", bottom=" + bottom + "]\n";
+    }
 }
