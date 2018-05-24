@@ -13,6 +13,8 @@ public class PuzzleBoard {
 
     private PuzzlePiece[][] board;
 
+    private List<Integer> possibleLinesAmount;
+
     private String outputFileName = "puzzleResult.txt";
 
     private void initBoard(){
@@ -59,16 +61,9 @@ public class PuzzleBoard {
         return notInRangeIds;
     }
 
-    private List<Integer> validateFormat(){
-        List<Integer> invalidIds = new ArrayList<Integer>();
-        for (Map.Entry<Integer, PuzzlePiece> entry : input.entrySet())
-        {
-            PuzzlePiece piece = entry.getValue();
-            if(!piece.isValid()){
-                invalidIds.add(entry.getKey());
-            }
-        }
-        return invalidIds;
+    private boolean validateStraightEdgesAmount(){
+
+        return true;
     }
 
     private void fillOutputFile(String content) throws IOException {
