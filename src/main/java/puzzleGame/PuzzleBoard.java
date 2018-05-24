@@ -76,7 +76,7 @@ public class PuzzleBoard {
 
     // Added for TestPuzzleValidator unit tests
     public PuzzleBoard(){
-        input = new HashMap<>();
+        input = new HashMap<Integer, PuzzlePiece>();
     }
 
 
