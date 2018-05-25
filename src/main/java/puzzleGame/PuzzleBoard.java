@@ -68,7 +68,7 @@ public class PuzzleBoard {
         for (int i = 1; i <= piecesAmount; i++) {
             if (piecesAmount % i == 0) {
                 int j = piecesAmount / i;
-                if(countStraightEdges()[0] >= i && countStraightEdges()[1] >= i && countStraightEdges()[2] >= j && countStraightEdges()[3] >= j){
+                if(edgesAmount[0] >= i && edgesAmount[1] >= i && edgesAmount[2] >= j && edgesAmount[3] >= j){
                     possibleLinesAmount.add(new int[]{i,j});
                 }
             }
