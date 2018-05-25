@@ -9,29 +9,24 @@ import java.util.Map;
 
 public class PuzzleBoard {
 
-
     public Map<Integer, PuzzlePiece> input;
+
+    private List<int[]> possibleLinesAmount;
 
     private PuzzlePiece[][] board;
 
-    private List<int[]> possibleLinesAmount;
+
 
     private String outputFileName = "puzzleResult.txt";
 
     // Added for TestPuzzleValidator unit tests
-    public PuzzleBoard(String inputFile){
-        FileParser fileParser = new FileParser(inputFile);
-        input = fileParser.parse();
+    public PuzzleBoard(Map<Integer, PuzzlePiece> pieces){
+
+
     }
 
-    private void initBoard() {
-        if(validateStraightEdgesAmount()){
-
-        }
-    }
-
-    public String solve() {
-        return outputFileName;
+    public PuzzlePiece[][] getBoard() {
+        return board;
     }
 
     private boolean validateInput() {
@@ -91,6 +86,10 @@ public class PuzzleBoard {
         return new int[] {straightTop, straightBottom, straightRight, straightLeft};
     }
 
+
+
+
+
     private void fillOutputFile(String content) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName, true));
         writer.append(content);
@@ -102,10 +101,5 @@ public class PuzzleBoard {
         PuzzlePiece piece = new PuzzlePiece(left, top, right, bottom);
         input.put(id, piece);
 
-    }
-
-    // Added for TestPuzzleValidator unit tests
-    public Map<Integer, PuzzlePiece> getInput() {
-        return input;
     }
 }
