@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestPuzzleValidatorUtil {
 
     private PuzzleValidatorUtil puzzleValidatorUtil = new PuzzleValidatorUtil();
-    private static PuzzleBoard puzzleBoard = new PuzzleBoard();
+    private static PuzzleBoard puzzleBoard = new PuzzleBoard("aaa");
 
     @BeforeEach
     public void init() {

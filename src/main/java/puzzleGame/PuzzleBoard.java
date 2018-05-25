@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,24 +14,24 @@ public class PuzzleBoard {
 
     private PuzzlePiece[][] board;
 
-    private List<Integer> possibleLinesAmount;
+    private List<int[]> possibleLinesAmount;
 
     private String outputFileName = "puzzleResult.txt";
 
+    // Added for TestPuzzleValidator unit tests
+    public PuzzleBoard(String inputFile){
+        FileParser fileParser = new FileParser(inputFile);
+        input = fileParser.parse();
+    }
+
     private void initBoard() {
-        int piecesAmount = input.size();
-        for (int i = 1; i <= piecesAmount / 2; i++) {
-            if (piecesAmount % i == 0) {
-                board = new PuzzlePiece[i][piecesAmount / i];
-                if (solve()) {
-                    break;
-                }
-            }
+        if(validateStraightEdgesAmount()){
+
         }
     }
 
-    public boolean solve() {
-        return true;
+    public String solve() {
+        return outputFileName;
     }
 
     private boolean validateInput() {
@@ -63,8 +62,33 @@ public class PuzzleBoard {
     }
 
     private boolean validateStraightEdgesAmount(){
+        int piecesAmount = input.size();
+        possibleLinesAmount = new ArrayList<int[]>();
+        int[] edgesAmount = countStraightEdges();
+        for (int i = 1; i <= piecesAmount; i++) {
+            if (piecesAmount % i == 0) {
+                int j = piecesAmount / i;
+                if(countStraightEdges()[0] >= i && countStraightEdges()[1] >= i && countStraightEdges()[2] >= j && countStraightEdges()[3] >= j){
+                    possibleLinesAmount.add(new int[]{i,j});
+                }
+            }
+        }
+        return !possibleLinesAmount.isEmpty();
+    }
 
-        return true;
+    private int[] countStraightEdges(){
+        int straightTop = 0;
+        int straightBottom = 0;
+        int straightRight = 0;
+        int straightLeft = 0;
+        for(Map.Entry<Integer, PuzzlePiece> entry : input.entrySet()){
+            PuzzlePiece piece = entry.getValue();
+            straightTop = piece.getTop() == 0 ? straightTop ++ : straightTop;
+            straightBottom = piece.getBottom() == 0 ? straightBottom ++ : straightBottom;
+            straightLeft = piece.getLeft() == 0 ? straightLeft ++ : straightLeft;
+            straightRight = piece.getRight() == 0 ? straightRight ++ : straightRight;
+        }
+        return new int[] {straightTop, straightBottom, straightRight, straightLeft};
     }
 
     private void fillOutputFile(String content) throws IOException {
@@ -72,14 +96,6 @@ public class PuzzleBoard {
         writer.append(content);
         writer.close();
     }
-
-
-    // Added for TestPuzzleValidator unit tests
-    public PuzzleBoard(){
-        input = new HashMap<Integer, PuzzlePiece>();
-    }
-
-
     // Added for TestPuzzleValidator unit tests
     public void addPiece(int id, int left, int top, int right, int bottom) {
 
