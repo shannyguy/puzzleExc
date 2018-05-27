@@ -113,8 +113,12 @@ public class PuzzleBoard {
     private void clearRemoved(int row, int column){
         for(int i = column; i < board[row].length; i++){
             int currentValue = board[row][i];
-            input.put(currentValue, piecesInUse.remove(currentValue));
-            board[row][i] = 0;
+            if(currentValue != 0) {
+                input.put(currentValue, piecesInUse.remove(currentValue));
+                board[row][i] = 0;
+            }else{
+                break;
+            }
         }
 
     }
@@ -230,7 +234,12 @@ public class PuzzleBoard {
             sumOfLeft = sumOfLeft + piece.getLeft();
             sumOfRight = sumOfRight + piece.getRight();
         }
-        return sumOfTop == 0 && sumOfBottom == 0 && sumOfLeft == 0 && sumOfRight == 0;
+        boolean isValid = (sumOfTop + sumOfBottom + sumOfLeft + sumOfRight) == 0;
+        if(!isValid){
+            PuzzleErrors.addError(PuzzleErrors.SUM_OF_EDGES_NOT_ZERO);
+        }
+
+        return isValid;
     }
 
 
