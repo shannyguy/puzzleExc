@@ -7,7 +7,7 @@ public class PuzzlePiece {
     private int top;
     private int bottom;
 
-    public PuzzlePiece(int left, int top, int right, int bottom){
+    public PuzzlePiece(int left, int right, int top, int bottom){
         this.left = left;
         this.top = top;
         this.right = right;
