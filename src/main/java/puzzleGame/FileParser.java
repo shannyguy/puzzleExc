@@ -15,14 +15,13 @@ public class FileParser {
 
     // Constructor
     public FileParser(String fileName) {
-        this.fileName = "puzzle.txt";
+        this.fileName = fileName;
     }
 
     // Parse file
     public Map<Integer, PuzzlePiece> parse() {
         try {
             String content = new String(Files.readAllBytes(Paths.get(fileName)));
-            new FileOutputStream("puzzle.txt", true).close();
             String contentArr[] = content.split("\\r?\\n");
             numberOfElements = Integer.parseInt(contentArr[0].split("=")[1]);
             for (int i = 1; i < contentArr.length; i++) {
@@ -39,7 +38,6 @@ public class FileParser {
             System.out.println("File doesn't exist!");
             e.printStackTrace();
         }
-        System.out.println(piecesMap);
         return piecesMap;
     }
 
