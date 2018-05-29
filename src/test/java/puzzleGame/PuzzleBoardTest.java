@@ -15,19 +15,23 @@ public class PuzzleBoardTest {
     private static int id = 1;
     private static Map<Integer, PuzzlePiece> firstInput;
     private static Map<Integer, PuzzlePiece> secondInput;
+    private static Map<Integer, PuzzlePiece> thirdInput;
     private static Map<Integer, PuzzlePiece> firstInvalidInput;
     private static Map<Integer, PuzzlePiece> secondInvalidInput;
 
     @BeforeAll
     public static void initTest(){
-        String firstPieces = "0,-1,1,1#0,-1,0,-1#1,1,0,0#-1,0,0,-1#0,-1,0,0#1,0,0,-1#0,0,-1,0#-1,0,-1,0#1,-1,0,0#1,1,1,-1#-1,-1,0,1#1,0,1,-1#0,1,0,-1#0,0,0,1#0,-1,0,-1#1,-1,1,-1#1,0,-1,-1#0,0,1,0#0,0,1,-1#0,1,0,1#-1,0,1,1#0,0,1,1#0,1,1,-1#-1,0,0,0#0,1,1,0#-1,0,-1,0#0,1,-1,0#-1,1,-1,0#-1,-1,1,0#1,0,0,0";
+        String firstPieces = "1,0,-1,0#0,0,-1,1#0,0,1,1#0,0,1,-1#0,0,0,-1#0,1,0,1#-1,0,-1,0#0,0,1,0#0,1,0,-1#-1,1,0,1#-1,-1,0,1#-1,0,-1,-1#0,1,-1,0#-1,1,1,0#-1,1,1,0#1,-1,0,1#1,0,0,1#0,-1,1,-1#1,1,-1,-1#-1,-1,-1,0";
         //String secondPieces = "0,-1,0,0#1,1,0,-1#-1,0,0,1#0,-1,0,0#1,1,1,-1#-1,0,-1,1#0,1,0,0#-1,0,1,0#0,0,-1,0";
-        String secondPieces = "0,0,-1,0#-1,0,0,1#1,1,0,-1#0,-1,0,0#1,1,1,-1#-1,0,-1,1#0,1,0,0#-1,0,1,0#0,-1,0,0";
+        String secondPieces = "0,0,-1,0#-1,0,0,1#1,1,0,-1#1,1,1,-1#0,-1,0,0#-1,0,-1,1#0,1,0,0#-1,0,1,0#0,-1,0,0";
+        String thirdPieces = "0,1,0,1#0,0,0,-1#1,0,0,-1#0,1,-1,-1#-1,-1,1,-1#1,0,1,-1#0,0,1,1#0,1,1,-1#-1,0,1,0#0,1,-1,-1#-1,0,1,-1#-1,-1,0,-1#0,0,1,0#0,0,1,0#0,0,1,0";
+
         String firstInvalidPieces = "0,0,-1,0#-1,0,0,1#0,-1,0,0#1,1,1,-1#-1,0,-1,1#0,1,0,0#-1,0,1,0#0,-1,0,0";
         String secondInvalidPieces = "0,0,0,1#0,-1,0,-1#1,1,0,0#-1,0,0,-1#0,-1,1,0#1,0,0,-1#0,0,-1,0#0,-1,1,1#1,-1,0,0#1,1,1,-1#-1,-1,0,1#1,0,1,-1#0,1,0,-1#-1,0,-1,0#0,-1,0,-1#1,-1,1,-1#1,0,-1,-1#0,0,1,0#0,0,1,-1#0,1,0,1#-1,0,1,1#0,0,1,1#0,1,1,-1#-1,0,0,0#0,1,1,0#-1,0,-1,0#0,1,-1,0#-1,1,-1,0#-1,-1,1,0#1,0,0,0";
 
         firstInput = new HashMap<Integer, PuzzlePiece>();
         secondInput = new HashMap<Integer, PuzzlePiece>();
+        thirdInput = new HashMap<Integer, PuzzlePiece>();
         firstInvalidInput = new HashMap<Integer, PuzzlePiece>();
         secondInvalidInput = new HashMap<Integer, PuzzlePiece>();
         String [] firstPiecesArr = firstPieces.split("#");
@@ -35,6 +39,9 @@ public class PuzzleBoardTest {
         id = 1;
         String [] secondPiecesArr = secondPieces.split("#");
         Arrays.stream(secondPiecesArr).forEach(piece-> addPiece(piece, secondInput));
+        id = 1;
+        String [] thirdPiecesArr = thirdPieces.split("#");
+        Arrays.stream(thirdPiecesArr).forEach(piece-> addPiece(piece, thirdInput));
         id = 1;
         String [] firstInvalidPiecesArr = firstInvalidPieces.split("#");
         Arrays.stream(firstInvalidPiecesArr).forEach(piece-> addPiece(piece, firstInvalidInput));
@@ -54,7 +61,7 @@ public class PuzzleBoardTest {
     }
 
     private static Stream<Map<Integer, PuzzlePiece>> listProvider() {
-        return Stream.of(firstInput, secondInput);
+        return Stream.of(firstInput, secondInput, thirdInput);
     }
     private static Stream<Map<Integer, PuzzlePiece>> invalidListProvider() {
         return Stream.of(firstInvalidInput, secondInvalidInput);
@@ -64,7 +71,10 @@ public class PuzzleBoardTest {
     @MethodSource("listProvider")
     public void validPuzzleInputTest(Map<Integer, PuzzlePiece> input) throws IllegalPuzzleException {
         PuzzleBoard board = new PuzzleBoard(input);
-        Assertions.assertNotNull(board.getBoard());
+        int[][] solotion = board.getBoard();
+        PuzzleValidatorUtil c = new PuzzleValidatorUtil();
+        c.isValidPuzzle(input, solotion);
+        Assertions.assertNotNull(solotion);
 
     }
 

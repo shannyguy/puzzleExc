@@ -1,8 +1,5 @@
 package puzzleGame;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 public class PuzzleBoard {
@@ -19,7 +16,7 @@ public class PuzzleBoard {
 
 
 
-    private String outputFileName = "puzzleResult.txt";
+
 
     // Added for TestPuzzleValidator unit tests
     public PuzzleBoard(Map<Integer, PuzzlePiece> pieces)  {
@@ -27,9 +24,7 @@ public class PuzzleBoard {
     }
 
     public int[][] getBoard() throws IllegalPuzzleException {
-        validateStraightEdgesAmount();
-        validateAllCornersExist();
-        validateSumOfEdgesIsZero();
+        validateInput();
         if(!PuzzleErrors.getErrorsList().isEmpty()){
             StringBuilder builder = new StringBuilder();
             for (String error : PuzzleErrors.getErrorsList()){
@@ -38,29 +33,30 @@ public class PuzzleBoard {
             PuzzleErrors.clearErrors();
             throw new IllegalPuzzleException(builder.toString());
         }
-        boolean solved = findSolution();
-        return board;
+        if(findSolution()){
+            return board;
+        }else{
+            throw new IllegalPuzzleException(PuzzleErrors.CANNOT_SOLVE_PUZZLE);
+        }
+
     }
 
 
     private boolean findSolution(){
         boolean solved = false;
-        piecesInUse = new HashMap<Integer, PuzzlePiece>();
         for(int[] possibleDimension: possibleDimensions){
-            for (Map.Entry<Integer, PuzzlePiece> entry : piecesInUse.entrySet()) {
-                input.put(entry.getKey(), entry.getValue());
-                piecesInUse.remove(entry);
-            }
             currentRowsAmount = possibleDimension[0];
                 board = new int [possibleDimension[0]] [possibleDimension[1]];
-                solve(0,0);
-                if(board != null){
-                    solved = true;
+                piecesInUse = new HashMap<>();
+                boolean success = solve(0, 0, new HashMap<Integer, PuzzlePiece>());
+                if(success){
+                    solved = success;
                     break;
                 }
         }
         return solved;
     }
+
 
     private void solve(int row, int column){
         int match = findMatch(row, column);
@@ -85,22 +81,52 @@ public class PuzzleBoard {
         }
 
 
+  }
+
+    private  boolean solve(int row, int column, Map<Integer, PuzzlePiece> piecesInUse){
+        int id = 1;
+        int requiredLeft = column == 0  ? 0 : Integer.compare(0, input.get( board[row][column - 1]).getRight());;
+        int requiredTop = row == 0 ? 0 : Integer.compare(0, input.get( board[row - 1][column]).getBottom());
+        boolean requiredFlatRight = column + 1 == board[0].length;
+        boolean requiredFlatBottom = row + 1 == currentRowsAmount;
+        for (id = 1; id <= input.size(); id++){
+            PuzzlePiece piece = piecesInUse.get(id);
+            if(piece == null){
+                piece = input.get(id);
+                if((piece.getLeft() == requiredLeft) &&
+                        (piece.getTop() == requiredTop) &&
+                        (requiredFlatRight ? piece.getRight() == 0: true) &&
+                        (requiredFlatBottom ? piece.getBottom() == 0: true)) {
+                    board[row][column] = id;
+                    piecesInUse.put(id, piece);
+                    System.out.println("set " + id + " in place " + row + " " + column);
+                    if (row == board.length && column == board[0].length) {
+                        return true;
+                    }
+                    if(!solve(column + 1 == board[0].length ? row + 1 : row, column+ 1 == board[0].length ? 0 : column + 1, piecesInUse)){
+                        piecesInUse.remove(id);
+                    }
+
+
+                }
+            }
+        }
+
+        return false;
     }
 
-    private int defineRequiredLeftSide(int rowIndex, int columnIndex){
-        int neighbourRight = piecesInUse.get(board[rowIndex][columnIndex - 1]).getRight();
-        return Integer.compare(0, neighbourRight);
-    }
 
     private int findMatch(int row, int column){
         int currentValue = board[row][column];
         clearRemoved(row, column);
         int requiredLeft = column == 0  ? 0 : defineRequiredLeftSide(row, column);
         int requiredTop = row == 0 ? 0 : defineRequiredToptSide(row, column);
+        boolean requiredFlatRight = column + 1 == board[0].length;
+        boolean requiredFlatBottom = row + 1 == currentRowsAmount;
         for (int i = currentValue + 1 ; i <= input.size() + piecesInUse.size(); i++){
             PuzzlePiece piece = input.get(i);
             if(piece != null){
-                if(piece.getLeft() == requiredLeft && piece.getTop() == requiredTop){
+                if(piece.getLeft() == requiredLeft && piece.getTop() == requiredTop && requiredFlatRight ? piece.getRight() == 0: true && requiredFlatBottom ? piece.getBottom() == 0: true){
                     piecesInUse.put(i, input.remove(i));
                     return i;
                 }
@@ -108,6 +134,16 @@ public class PuzzleBoard {
 
         }
         return -1;
+    }
+
+    private int defineRequiredLeftSide(int rowIndex, int columnIndex){
+        int neighbourRight = piecesInUse.get(board[rowIndex][columnIndex - 1]).getRight();
+        return Integer.compare(0, neighbourRight);
+    }
+
+    private int defineRequiredToptSide(int rowIndex, int columnIndex){
+        int neighbourBottom = piecesInUse.get(board[rowIndex - 1][columnIndex]).getBottom();
+        return Integer.compare(0, neighbourBottom);
     }
 
     private void clearRemoved(int row, int column){
@@ -123,15 +159,8 @@ public class PuzzleBoard {
 
     }
 
-    private int defineRequiredToptSide(int rowIndex, int columnIndex){
-        int neighbourBottom = piecesInUse.get(board[rowIndex - 1][columnIndex]).getBottom();
-        return Integer.compare(0, neighbourBottom);
-    }
-
     private boolean validateInput() {
-        StringBuilder errors = new StringBuilder();
-        List<Integer> missingIds = validatePartsIds();
-        return true;
+        return (validateStraightEdgesAmount() && validateAllCornersExist() && validateSumOfEdgesIsZero());
     }
 
     private List<Integer> validatePartsIds() {
@@ -162,7 +191,7 @@ public class PuzzleBoard {
         for (int i = 1; i <= piecesAmount; i++) {
             if (piecesAmount % i == 0) {
                 int j = piecesAmount / i;
-                if(edgesAmount[0] >= i && edgesAmount[1] >= i && edgesAmount[2] >= j && edgesAmount[3] >= j){
+                if(edgesAmount[2] >= i && edgesAmount[3] >= i && edgesAmount[0] >= j && edgesAmount[1] >= j){
                     possibleDimensions.add(new int[]{i,j});
                 }
             }
@@ -246,11 +275,7 @@ public class PuzzleBoard {
 
 
 
-    private void fillOutputFile(String content) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName, true));
-        writer.append(content);
-        writer.close();
-    }
+
     // Added for TestPuzzleValidator unit tests
     public void addPiece(int id, int left, int top, int right, int bottom) {
 

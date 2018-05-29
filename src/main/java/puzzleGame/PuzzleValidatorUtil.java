@@ -33,10 +33,25 @@ public class PuzzleValidatorUtil {
             }
         }
 
-        return validateSolution();
+        return validateSolution(solution);
     }
 
-    private boolean validateSolution() {
+    public boolean isValidPuzzle(Map<Integer, PuzzlePiece> pieceList, int[][] result) {
+
+
+        String puzzleRow;
+        rowNumber = result.length;
+        columnNumber = result[0].length;
+           for (int i = 0; i< rowNumber; i++){
+               for (int j = 0; j<columnNumber; j++){
+                   solution.add(pieceList.get(result[i][j]));
+               }
+        }
+
+        return validateSolution(solution);
+    }
+
+    private boolean validateSolution(ArrayList<PuzzlePiece> solution) {
 
         for (int index = 0; index < solution.size(); index++) {
 
