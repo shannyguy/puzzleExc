@@ -1,14 +1,4 @@
-ToDo:
-2. Complete validator unit test
-
-
-6. Test case of unsolved puzzle
-8. List known limitaions at the end of today
-
-
-
 Known limitations:
-1. Missing fileParser unhappy tests.
-2. Working with static files for the fileParser tests
-3. Errors are not always at the right order
-4. missing error for "input file doesn't exist"
+1. Errors may appear in the wrong order
+2. Missing test cases for puzzles that can't be solved
+3. File parser unit tests are not complete
