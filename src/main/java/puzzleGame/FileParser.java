@@ -18,7 +18,11 @@ public class FileParser {
     public FileParser(String fileName) {
         this.fileName = fileName;
     }
-
+    
+    public int getNumberOfElements(){
+        return numberOfElements;
+    }
+    
     // Parse file
     public Map<Integer, PuzzlePiece> parse() {
         String contentArr[] = writeFileToString();
