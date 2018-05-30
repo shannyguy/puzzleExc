@@ -18,17 +18,17 @@ public class FileParser {
     public FileParser(String fileName) {
         this.fileName = fileName;
     }
-    
-    public int getNumberOfElements(){
+
+    public int getNumberOfElements() {
         return numberOfElements;
     }
-    
+
     // Parse file
     public Map<Integer, PuzzlePiece> parse() {
         String contentArr[] = writeFileToString();
         int nextLineAfternumberOfElements = readAndValidateNumberOfElements(contentArr);
         if (nextLineAfternumberOfElements < 0) {
-            System.out.println("Number of elements: " + numberOfElements + " is ilegal");
+            PuzzleErrors.addError(String.format(PuzzleErrors.WRONG_NUMBER_OF_ELEMEMNTS_VALUE, numberOfElements));
         }
         for (int line = nextLineAfternumberOfElements; line < contentArr.length; line++) {
             boolean lineWithElement = convertStringToNumbersAndVerifyValue(contentArr[line]);
@@ -48,8 +48,7 @@ public class FileParser {
         try {
             String content = new String(Files.readAllBytes(Paths.get(fileName)));
             contentArr = content.split("\\r?\\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("File doesn't exist!");
             e.printStackTrace();
         }
@@ -62,8 +61,8 @@ public class FileParser {
         int line;
         int numberOfElementsNotexist = 0;
         int numberOfElementsOutOfRange = -1;
-        
-        for (line=0 ; line < contentArr.length; line++) {
+
+        for (line = 0; line < contentArr.length; line++) {
             contentArr[line] = contentArr[line].trim();
             if (contentArr[line].equals("") || contentArr[line].startsWith("#")) {
                 continue;
@@ -71,9 +70,8 @@ public class FileParser {
             numberOfElements = Integer.parseInt(contentArr[line].split("=")[1]);
             if (numberOfElements < 1 || numberOfElements > 10_000) {
                 return numberOfElementsOutOfRange;
-            }
-            else{
-                return line+1;
+            } else {
+                return line + 1;
             }
         }
         return numberOfElementsNotexist;
@@ -97,23 +95,24 @@ public class FileParser {
     private boolean validateIdAndElement(int[] lineValues) {
         int id = lineValues[0];
         if (id < 1 || id > numberOfElements || idList.contains(id)) {
+            PuzzleErrors.addError(String.format(PuzzleErrors.WRONG_ELEMENT_IDS, numberOfElements, id));
             return false;
-        }
-        else {
+        } else {
             idList.add(id);
         }
         for (int outline = 1; outline < 5; outline++) {
             if (lineValues[outline] > 1 || lineValues[outline] < -1) {
+                PuzzleErrors.addError(String.format(PuzzleErrors.WRONG_ELEMENT_FORMAT, id, lineValues[outline]));
                 return false;
             }
         }
         return true;
     }
-    
+
     private void verifyAllIdsExist() {
-        for(int id=1; id<numberOfElements; id++){
-            if(!idList.contains(id)){
-                System.out.println("Error: id: " + id + " is missing");
+        for (int id = 1; id < numberOfElements; id++) {
+            if (!idList.contains(id)) {
+                PuzzleErrors.addError(String.format(PuzzleErrors.MISSING_PUZZLE_ELEMENTS, id));
             }
         }
     }

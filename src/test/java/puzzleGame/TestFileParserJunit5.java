@@ -129,7 +129,9 @@ public class TestFileParserJunit5 {
             bw.write("# This is a comments!!!");
             bw.newLine();
             bw.write(numOfElements);
+            bw.newLine();
             bw.write("# This is a comments!!!");
+            bw.newLine();
             bw.write("# This is a comments!!!");
             bw.newLine();
             bw.newLine();
@@ -148,16 +150,6 @@ public class TestFileParserJunit5 {
         }
     }
     
-        Assertions.assertEquals(ExpectednumOfElements, Integer.parseInt(numElements.split("=")[1].trim()));
-        Assertions.assertEquals(piecesMap.get(elementId1)
-        Assertions.assertEquals(piecesMap.get(elementId1)
-        Assertions.assertEquals(piecesMap.get(elementId1)
-        Assertions.assertEquals(piecesMap.get(elementId1)
-        Assertions.assertEquals(piecesMap.get(elementId2)
-        Assertions.assertEquals(piecesMap.get(elementId2)
-        Assertions.assertEquals(piecesMap.get(elementId2)
-        Assertions.assertEquals(piecesMap.get(elementId2)
-
     private void writeElementsToFile(String numOfElements, String element1, String element2) {
         try (FileOutputStream fos = new FileOutputStream(new File(fileName)); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos))) {
             bw.write(numOfElements);
