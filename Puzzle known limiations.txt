@@ -1,11 +1,8 @@
 ToDo:
-1. Create base class for test
 2. Complete validator unit test
 3. Fix Junit 4/5
 4. User errors enum (Guy)
-5. Validation of sum 0 for all edges
 6. Test case of unsolved puzzle
-7. Test error output file
 8. List known limitaions at the end of today
 
 
