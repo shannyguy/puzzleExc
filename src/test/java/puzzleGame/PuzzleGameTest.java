@@ -1,5 +1,6 @@
 package puzzleGame;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -7,12 +8,10 @@ import java.io.IOException;
 public class PuzzleGameTest {
 
     @Test
-    public void fff() throws IllegalPuzzleException {
-        PuzzleGame game = new PuzzleGame("");
-        try {
-            game.solve();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void fff() throws IllegalPuzzleException, IOException {
+        PuzzleGame game = new PuzzleGame("validPuzzle36.txt");
+        String resultFileName = game.solve();
+        PuzzleValidatorUtil validator = new PuzzleValidatorUtil();
+        Assertions.assertTrue(validator.isValidPuzzle(game.getInput(), resultFileName));
     }
 }

@@ -48,7 +48,7 @@ public class PuzzleBoard {
             currentRowsAmount = possibleDimension[0];
                 board = new int [possibleDimension[0]] [possibleDimension[1]];
                 piecesInUse = new HashMap<>();
-                boolean success = solve(0, 0, new HashMap<Integer, PuzzlePiece>());
+                boolean success = solve(0, 0, piecesInUse);
                 if(success){
                     solved = success;
                     break;
@@ -100,11 +100,14 @@ public class PuzzleBoard {
                     board[row][column] = id;
                     piecesInUse.put(id, piece);
                     System.out.println("set " + id + " in place " + row + " " + column);
-                    if (row == board.length && column == board[0].length) {
+                    if (piecesInUse.size() == input.size()) {
                         return true;
                     }
                     if(!solve(column + 1 == board[0].length ? row + 1 : row, column+ 1 == board[0].length ? 0 : column + 1, piecesInUse)){
                         piecesInUse.remove(id);
+                        continue;
+                    }else{
+                        return true;
                     }
 
 

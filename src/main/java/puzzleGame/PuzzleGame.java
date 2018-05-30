@@ -25,6 +25,7 @@ public class PuzzleGame {
         PuzzleBoard puzzleBoard = new PuzzleBoard(input);
         try{
             solution = puzzleBoard.getBoard();
+            fillOutputFile(this.toString());
 
         }catch (IllegalPuzzleException e){
             fillOutputFile(e.getMessage());
@@ -40,7 +41,7 @@ public class PuzzleGame {
 
     private void fillOutputFile(String content) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName, true));
-        writer.append(content);
+        writer.write(content);
         writer.close();
     }
 
