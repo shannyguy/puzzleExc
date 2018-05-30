@@ -9,7 +9,7 @@ public class PuzzleGame {
 
     private String inputFile;
     public Map<Integer, PuzzlePiece> input;
-    private String outputFileName = "puzzleResult5.txt";
+    private String outputFileName = "_puzzleResult.txt";
     private int[][] solution;
 
 
@@ -40,6 +40,7 @@ public class PuzzleGame {
     }
 
     private void fillOutputFile(String content) throws IOException {
+        outputFileName = new Date().getTime() + outputFileName;
         BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName, true));
         writer.write(content);
         writer.close();
