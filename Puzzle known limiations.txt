@@ -1,10 +1,14 @@
 ToDo:
 2. Complete validator unit test
-3. Fix Junit 4/5
-4. User errors enum (Guy)
+
+
 6. Test case of unsolved puzzle
 8. List known limitaions at the end of today
 
 
 
 Known limitations:
+1. Missing fileParser unhappy tests.
+2. Working with static files for the fileParser tests
+3. Errors are not always at the right order
+4. missing error for "input file doesn't exist"
