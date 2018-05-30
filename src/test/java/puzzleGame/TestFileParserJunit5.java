@@ -1,6 +1,5 @@
 package puzzleGame;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +9,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.stream.Stream;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -55,22 +56,22 @@ public class TestFileParserJunit5 {
         FileParser fileParser = new FileParser(fileName);
         piecesMap = fileParser.parse();
 
-        assertTrue("Number Of Elements", Integer.parseInt(numElements.split("=")[1].trim()), ExpectednumOfElements);
-        assertEquals(piecesMap.get(elementId1)
+        Assertions.assertEquals(ExpectednumOfElements, Integer.parseInt(numElements.split("=")[1].trim()));
+        Assertions.assertEquals(piecesMap.get(elementId1)
                 .getLeft(), expectedPiece1.getLeft());
-        assertEquals(piecesMap.get(elementId1)
+        Assertions.assertEquals(piecesMap.get(elementId1)
                 .getTop(), expectedPiece1.getTop());
-        assertEquals(piecesMap.get(elementId1)
+        Assertions.assertEquals(piecesMap.get(elementId1)
                 .getRight(), expectedPiece1.getRight());
-        assertEquals(piecesMap.get(elementId1)
+        Assertions.assertEquals(piecesMap.get(elementId1)
                 .getBottom(), expectedPiece1.getBottom());
-        assertEquals(piecesMap.get(elementId2)
+        Assertions.assertEquals(piecesMap.get(elementId2)
                 .getLeft(), expectedPiece2.getLeft());
-        assertEquals(piecesMap.get(elementId2)
+        Assertions.assertEquals(piecesMap.get(elementId2)
                 .getTop(), expectedPiece2.getTop());
-        assertEquals(piecesMap.get(elementId2)
+        Assertions.assertEquals(piecesMap.get(elementId2)
                 .getRight(), expectedPiece2.getRight());
-        assertEquals(piecesMap.get(elementId2)
+        Assertions.assertEquals(piecesMap.get(elementId2)
                 .getBottom(), expectedPiece2.getBottom());
 
     }
@@ -84,9 +85,9 @@ public class TestFileParserJunit5 {
 // 4. Wrong element IDs (e.g. puzzle of size 6 cannot have an ID 7)
 // 5. Wrong elements format (not having 4 edges, having edges which are not 0, 1, -1)
 // 6. having more than 4 edges is an error!
-// 7. Input file doesn’t exist / bad folder / can’t open file (permissions) etc
+// 7. Input file doesnï¿½t exist / bad folder / canï¿½t open file (permissions) etc
 // 8. Bad input file format: strings that are not numbers where numbers are expected
 //
 // happy:
 // 1. empty line or #
-// 2. The elements in file doesn’t need to come in order
+// 2. The elements in file doesnï¿½t need to come in order
