@@ -9,7 +9,7 @@ public class PuzzleGameTest {
 
     @Test
     public void validPuzzleTest() throws IllegalPuzzleException, IOException {
-        PuzzleGame game = new PuzzleGame("validPuzzle4.txt");
+        PuzzleGame game = new PuzzleGame("validPuzzle20.txt");
         String resultFileName = game.solve();
         PuzzleValidatorUtil validator = new PuzzleValidatorUtil();
         Assertions.assertTrue(validator.isValidPuzzle(game.getInput(), resultFileName));
