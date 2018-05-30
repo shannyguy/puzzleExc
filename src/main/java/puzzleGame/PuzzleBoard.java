@@ -92,7 +92,10 @@ public class PuzzleBoard {
     }
 
     private boolean validateInput() {
-        return (validateStraightEdgesAmount() && validateAllCornersExist() && validateSumOfEdgesIsZero());
+        boolean isStraightEdgesAmountCorrect  = validateStraightEdgesAmount();
+        boolean allCornersExist = validateAllCornersExist();
+        boolean sumOfEdgesZero = validateSumOfEdgesIsZero();
+        return (isStraightEdgesAmountCorrect && allCornersExist && sumOfEdgesZero);
     }
 
     private boolean validateStraightEdgesAmount(){

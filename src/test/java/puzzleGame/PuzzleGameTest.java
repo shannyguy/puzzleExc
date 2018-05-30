@@ -20,7 +20,8 @@ public class PuzzleGameTest {
         PuzzleGame game = new PuzzleGame("invalidPuzzle36.txt");
         String resultFileName = game.solve();
         BufferedReader reader = new BufferedReader(new FileReader(resultFileName));
-        Assertions.assertEquals("Cannot solve puzzle: sum of edges is not zero", reader.readLine());
+        Assertions.assertEquals("Cannot solve puzzle: wrong number of straight edges", reader.readLine());
+        Assertions.assertEquals("Cannot solve puzzle: missing corner element: <TL><TR>", reader.readLine());
         Assertions.assertEquals("Cannot solve puzzle: sum of edges is not zero", reader.readLine());
     }
 
