@@ -1,9 +1,9 @@
 package puzzleGame;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +12,7 @@ public class FileParser {
     private int numberOfElements;
     private Map<Integer, PuzzlePiece> piecesMap = new HashMap<>();
     int[] lineValues;
+    ArrayList<Integer> idList = new ArrayList<>();
 
     // Constructor
     public FileParser(String fileName) {
@@ -20,29 +21,62 @@ public class FileParser {
 
     // Parse file
     public Map<Integer, PuzzlePiece> parse() {
+        String contentArr[] = writeFileToString();
+        int nextLineAfternumberOfElements = readAndValidateNumberOfElements(contentArr);
+        if (nextLineAfternumberOfElements < 0) {
+            System.out.println("Number of elements: " + numberOfElements + " is ilegal");
+        }
+        for (int line = nextLineAfternumberOfElements; line < contentArr.length; line++) {
+            boolean lineWithElement = convertStringToNumbersAndVerifyValue(contentArr[line]);
+            if (!lineWithElement)
+                continue;
+            boolean elementValidated = validateIdAndElement(lineValues);
+            if (!elementValidated)
+                continue;
+            createPieceAndSaveToMap();
+        }
+        verifyAllIdsExist();
+        return piecesMap;
+    }
+
+    private String[] writeFileToString() {
+        String[] contentArr = null;
         try {
             String content = new String(Files.readAllBytes(Paths.get(fileName)));
-            String contentArr[] = content.split("\\r?\\n");
-            numberOfElements = Integer.parseInt(contentArr[0].split("=")[1]);
-            for (int i = 1; i < contentArr.length; i++) {
-                boolean lineWithValue = convertStringToNumbers(contentArr[i]);
-                if (!lineWithValue)
-                    continue;
-                boolean validated = validateNumbers(lineValues);
-                if (!validated)
-                    continue;
-                createPieceAndSaveToMap();
-            }
+            contentArr = content.split("\\r?\\n");
         }
         catch (IOException e) {
             System.out.println("File doesn't exist!");
             e.printStackTrace();
         }
-        return piecesMap;
+
+        return contentArr;
     }
 
-    // Convert string (line) to an int array return true if it's a line with element
-    private boolean convertStringToNumbers(String string) {
+    // Number of elements can be from 0 to 10,000
+    private int readAndValidateNumberOfElements(String[] contentArr) {
+        int line;
+        int numberOfElementsNotexist = 0;
+        int numberOfElementsOutOfRange = -1;
+        
+        for (line=0 ; line < contentArr.length; line++) {
+            contentArr[line] = contentArr[line].trim();
+            if (contentArr[line].equals("") || contentArr[line].startsWith("#")) {
+                continue;
+            }
+            numberOfElements = Integer.parseInt(contentArr[line].split("=")[1]);
+            if (numberOfElements < 1 || numberOfElements > 10_000) {
+                return numberOfElementsOutOfRange;
+            }
+            else{
+                return line+1;
+            }
+        }
+        return numberOfElementsNotexist;
+    }
+
+    // Skip lines with spaces or that start with #
+    private boolean convertStringToNumbersAndVerifyValue(String string) {
         string = string.trim();
         if (string.equals("") || string.startsWith("#")) {
             return false;
@@ -55,10 +89,29 @@ public class FileParser {
         return true;
     }
 
-    // Validate the int array: 1.missing pieces 2. extra pieces 3. corrupted piece (value or number of properties)
-    private boolean validateNumbers(int[] lineValues) {
-        // TODO Auto-generated method stub
+    // Validate the int array: 1. Wrong id 2.missing pieces 3. extra pieces 4. corrupted piece (value or number of properties)
+    private boolean validateIdAndElement(int[] lineValues) {
+        int id = lineValues[0];
+        if (id < 1 || id > numberOfElements || idList.contains(id)) {
+            return false;
+        }
+        else {
+            idList.add(id);
+        }
+        for (int outline = 1; outline < 5; outline++) {
+            if (lineValues[outline] > 1 || lineValues[outline] < -1) {
+                return false;
+            }
+        }
         return true;
+    }
+    
+    private void verifyAllIdsExist() {
+        for(int id=1; id<numberOfElements; id++){
+            if(!idList.contains(id)){
+                System.out.println("Error: id: " + id + " is missing");
+            }
+        }
     }
 
     // Create piece and save to Map

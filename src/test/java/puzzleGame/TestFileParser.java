@@ -37,8 +37,8 @@ public class TestFileParser {
    // @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] { 
-           {"NumElements=2", 2, 4, "4 1 -1 1 0", 2, "2 1 -1 -1 -1", new PuzzlePiece(1,-1,1,0), new PuzzlePiece(1,-1,-1,-1)},
-           {"NumElements=2", 2, 4, "4 0 0 0 0", 2, "2 1 1 1 1", new PuzzlePiece(0,0,0,0), new PuzzlePiece(1,1,1,1)}
+           {"NumElements=2", 2, 2, "2 1 -1 1 0", 1, "1 -1 -1 -1 -1", new PuzzlePiece(1,-1,1,0), new PuzzlePiece(-1,-1,-1,-1)},
+           {"NumElements=2", 2, 1, "1 0 0 0 0", 2, "2 1 1 1 1", new PuzzlePiece(0,0,0,0), new PuzzlePiece(1,1,1,1)}
            });
         // new HashMap<Integer,PuzzlePiece>{new PuzzlePiece(4,1,-1 },
         // }
@@ -80,8 +80,8 @@ public class TestFileParser {
 }
 
 // Unhappy:
-// 1. NumElements=24 - =0, =-, not exist
-// 2. The IDS of all elements must be in the range [1-NumElements]
+// 1. NumElements=24 - =0, =-, not exist (V)
+// 2. The IDS of all elements must be in the range [1-NumElements] (V)
 // 3. Missing elements in the input file
 // 4. Wrong element IDs (e.g. puzzle of size 6 cannot have an ID 7)
 // 5. Wrong elements format (not having 4 edges, having edges which are not 0, 1, -1)
@@ -90,5 +90,5 @@ public class TestFileParser {
 // 8. Bad input file format: strings that are not numbers where numbers are expected
 //
 // happy:
-// 1. empty line or #
-// 2. The elements in file doesnï¿½t need to come in order
+// 1. empty line or # (V)
+// 2. The elements in file doesn’t need to come in order
