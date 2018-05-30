@@ -72,7 +72,7 @@ public class PuzzleValidatorUtil {
             if (column == columnNumber - 1) {
                 if (solution.get(index).getRight() != 0) //Last column, right should be 0
                     return false;
-            } else if (-solution.get(index).getRight() != solution.get(index + 1).getLeft()) {
+            } else if (solution.get(index).getRight()+solution.get(index + 1).getLeft() != 0) {
                 return false;
             }
 
