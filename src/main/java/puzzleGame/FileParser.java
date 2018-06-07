@@ -13,6 +13,7 @@ public class FileParser {
     private Map<Integer, PuzzlePiece> piecesMap = new HashMap<>();
     int[] lineValues;
     ArrayList<Integer> idList = new ArrayList<>();
+    String[] contentArr;
 
     // Constructor
     public FileParser(String fileName) {
@@ -29,6 +30,7 @@ public class FileParser {
         int nextLineAfternumberOfElements = readAndValidateNumberOfElements(contentArr);
         if (nextLineAfternumberOfElements < 0) {
             PuzzleErrors.addError(String.format(PuzzleErrors.WRONG_NUMBER_OF_ELEMEMNTS_VALUE, numberOfElements));
+            return piecesMap;
         }
         for (int line = nextLineAfternumberOfElements; line < contentArr.length; line++) {
             boolean lineWithElement = convertStringToNumbersAndVerifyValue(contentArr[line]);
@@ -44,7 +46,7 @@ public class FileParser {
     }
 
     private String[] writeFileToString() {
-        String[] contentArr = null;
+        contentArr = null;
         try {
             String content = new String(Files.readAllBytes(Paths.get(fileName)));
             contentArr = content.split("\\r?\\n");
@@ -110,7 +112,7 @@ public class FileParser {
     }
 
     private void verifyAllIdsExist() {
-        for (int id = 1; id < numberOfElements; id++) {
+        for (int id = 1; id < contentArr.length; id++) {
             if (!idList.contains(id)) {
                 PuzzleErrors.addError(String.format(PuzzleErrors.MISSING_PUZZLE_ELEMENTS, id));
             }
