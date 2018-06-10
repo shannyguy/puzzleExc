@@ -2,52 +2,41 @@ package puzzleGame;
 
 public class PuzzlePiece {
 
-    private int left;
-    private int right;
-    private int top;
-    private int bottom;
+    private int[] edges = new int[4];
 
-    public PuzzlePiece(int left, int right, int top, int bottom){
-        this.left = left;
-        this.top = top;
-        this.right = right;
-        this.bottom = bottom;
-    }
-
-    // Added for TestPuzzleValidator unit tests
-    public PuzzlePiece(PuzzlePiece puzzlePiece){
-        this.left = puzzlePiece.left;
-        this.right = puzzlePiece.right;
-        this.top = puzzlePiece.top;
-        this.bottom = puzzlePiece.bottom;
+    public PuzzlePiece(int left, int right, int top, int bottom) {
+        this.edges[0] = left;
+        this.edges[1] = right;
+        this.edges[2] = top;
+        this.edges[3] = bottom;
     }
 
     public int getLeft(){
-        return left;
+        return edges[0];
     }
 
     public int getRight(){
-        return right;
+        return edges[1];
     }
 
     public int getTop(){
-        return top;
+        return edges[2];
     }
 
     public int getBottom(){
-        return bottom;
+        return edges[3];
     }
 
     public boolean isValid(){
-        return left < 2 && left > -2 && right < 2 && right > -2 && top < 2 && top > -2 && bottom < 2 && bottom > -2;
+        return edges[0] < 2 && edges[0] > -2 && edges[1] < 2 && edges[1] > -2 && edges[2] < 2 && edges[2] > -2 && edges[3] < 2 && edges[3] > -2;
     }
 
     public void printPiece(){
-        System.out.print("[" +left + ", " + right + ", " + top + ", " + bottom + "] ");
+        System.out.print("[" +edges[0] + ", " + edges[1] + ", " + edges[2] + ", " + edges[3] + "] ");
     }
 
     @Override
     public String toString() {
-        return "PuzzlePiece [left=" + left + ", right=" + right + ", top=" + top + ", bottom=" + bottom + "]\n";
+        return "PuzzlePiece [left=" + edges[0] + ", right=" + edges[1] + ", top=" + edges[2] + ", bottom=" + edges[3] + "]\n";
     }
 }

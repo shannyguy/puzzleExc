@@ -3,7 +3,7 @@ package puzzleGame;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PuzzleErrors {
+public class PuzzleErrors {
     public static String WRONG_NUMBER_OF_ELEMEMNTS_VALUE = "Illegal number of elements value in file: %s";
     public static String MISSING_PUZZLE_ELEMENTS = "Missing puzzle element(s) with the following IDs: %s";
     public static String WRONG_ELEMENT_IDS = "Puzzle of size <%s> cannot have the following IDs: %s";
@@ -13,21 +13,17 @@ public final class PuzzleErrors {
     public static String SUM_OF_EDGES_NOT_ZERO = "Cannot solve puzzle: sum of edges is not zero";
     public static String CANNOT_SOLVE_PUZZLE = "Cannot solve puzzle: it seems that there is no proper solution";
 
-    private static List<String> errorsList = new ArrayList<String>();
+    private List<String> errorsList = new ArrayList<String>();
 
-    public static void addError(String error){
+    public void addError(String error){
         errorsList.add(error);
     }
 
-    public static List<String> getErrorsList(){
+    public List<String> getErrorsList(){
         return errorsList;
     }
 
-    public static void clearErrors(){
+    public void clearErrors(){
         errorsList.clear();
-    }
-
-    private PuzzleErrors(){
-
     }
 }

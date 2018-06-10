@@ -4,33 +4,27 @@ import java.util.*;
 
 public class PuzzleBoard {
 
-    public Map<Integer, PuzzlePiece> input;
-
-    public  Map<Integer, PuzzlePiece> piecesInUse;
-
+    private Map<Integer, PuzzlePiece> input;
+    private PuzzleErrors puzzleErrors;
+    private  Map<Integer, PuzzlePiece> piecesInUse;
     private List<int[]> possibleDimensions;
-
     private int currentRowsAmount;
-
     private int[][] board;
 
-
-
-
-
     // Added for TestPuzzleValidator unit tests
-    public PuzzleBoard(Map<Integer, PuzzlePiece> pieces)  {
+    public PuzzleBoard(Map<Integer, PuzzlePiece> pieces, PuzzleErrors puzzleErrors)  {
         input = pieces;
+        this.puzzleErrors = puzzleErrors;
     }
 
     public int[][] getBoard() throws IllegalPuzzleException {
         validateInput();
-        if(!PuzzleErrors.getErrorsList().isEmpty()){
+        if(!puzzleErrors.getErrorsList().isEmpty()){
             StringBuilder builder = new StringBuilder();
-            for (String error : PuzzleErrors.getErrorsList()){
+            for (String error : puzzleErrors.getErrorsList()){
                 builder.append(error + '\n');
             }
-            PuzzleErrors.clearErrors();
+            puzzleErrors.clearErrors();
             throw new IllegalPuzzleException(builder.toString());
         }
         if(findSolution()){
@@ -111,7 +105,7 @@ public class PuzzleBoard {
             }
         }
         if(possibleDimensions.isEmpty()){
-            PuzzleErrors.addError(PuzzleErrors.WRONG_NUMBER_OF_STRAIGHT_EDGES);
+            puzzleErrors.addError(PuzzleErrors.WRONG_NUMBER_OF_STRAIGHT_EDGES);
             return false;
         }
         return true;
@@ -159,7 +153,7 @@ public class PuzzleBoard {
             builder.append("<BR>");
         }
         if(builder.length() != 0)  {
-            PuzzleErrors.addError(String.format(PuzzleErrors.MISSING_CORNERS_ERROR, builder));
+            puzzleErrors.addError(String.format(PuzzleErrors.MISSING_CORNERS_ERROR, builder));
             return false;
         }
         return true;
@@ -179,7 +173,7 @@ public class PuzzleBoard {
         }
         boolean isValid = (sumOfTop + sumOfBottom) ==0 &&  (sumOfLeft + sumOfRight) == 0;
         if(!isValid){
-            PuzzleErrors.addError(PuzzleErrors.SUM_OF_EDGES_NOT_ZERO);
+            puzzleErrors.addError(PuzzleErrors.SUM_OF_EDGES_NOT_ZERO);
         }
 
         return isValid;

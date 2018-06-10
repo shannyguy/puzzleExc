@@ -10,14 +10,16 @@ import java.util.Map;
 public class FileParser {
     private String fileName;
     private int numberOfElements;
+    private PuzzleErrors puzzleErrors;
     private Map<Integer, PuzzlePiece> piecesMap = new HashMap<>();
     int[] lineValues;
     ArrayList<Integer> idList = new ArrayList<>();
     String[] contentArr;
 
     // Constructor
-    public FileParser(String fileName) {
+    public FileParser(String fileName, PuzzleErrors puzzleErrors) {
         this.fileName = fileName;
+        this.puzzleErrors = puzzleErrors;
     }
 
     public int getNumberOfElements() {
@@ -29,7 +31,7 @@ public class FileParser {
         String contentArr[] = writeFileToString();
         int nextLineAfternumberOfElements = readAndValidateNumberOfElements(contentArr);
         if (nextLineAfternumberOfElements < 0) {
-            PuzzleErrors.addError(String.format(PuzzleErrors.WRONG_NUMBER_OF_ELEMEMNTS_VALUE, numberOfElements));
+            puzzleErrors.addError(String.format(PuzzleErrors.WRONG_NUMBER_OF_ELEMEMNTS_VALUE, numberOfElements));
             return piecesMap;
         }
         for (int line = nextLineAfternumberOfElements; line < contentArr.length; line++) {
@@ -97,14 +99,14 @@ public class FileParser {
     private boolean validateIdAndElement(int[] lineValues) {
         int id = lineValues[0];
         if (id < 1 || id > numberOfElements || idList.contains(id)) {
-            PuzzleErrors.addError(String.format(PuzzleErrors.WRONG_ELEMENT_IDS, numberOfElements, id));
+            puzzleErrors.addError(String.format(PuzzleErrors.WRONG_ELEMENT_IDS, numberOfElements, id));
             return false;
         } else {
             idList.add(id);
         }
         for (int outline = 1; outline < 5; outline++) {
             if (lineValues[outline] > 1 || lineValues[outline] < -1) {
-                PuzzleErrors.addError(String.format(PuzzleErrors.WRONG_ELEMENT_FORMAT, id, lineValues[outline]));
+                puzzleErrors.addError(String.format(PuzzleErrors.WRONG_ELEMENT_FORMAT, id, lineValues[outline]));
                 return false;
             }
         }
@@ -114,7 +116,7 @@ public class FileParser {
     private void verifyAllIdsExist() {
         for (int id = 1; id < contentArr.length; id++) {
             if (!idList.contains(id)) {
-                PuzzleErrors.addError(String.format(PuzzleErrors.MISSING_PUZZLE_ELEMENTS, id));
+                puzzleErrors.addError(String.format(PuzzleErrors.MISSING_PUZZLE_ELEMENTS, id));
             }
         }
     }

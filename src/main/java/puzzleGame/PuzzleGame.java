@@ -8,21 +8,22 @@ import java.util.*;
 public class PuzzleGame {
 
     private String inputFile;
-    public Map<Integer, PuzzlePiece> input;
-    private String outputFileName = "_puzzleResult.txt";
+    private String outputFileName;
+    private Map<Integer, PuzzlePiece> input;
+
     private int[][] solution;
 
 
-    public PuzzleGame(String inputFile){
+    public PuzzleGame(String inputFile, String outputFileName){
         this.inputFile = inputFile;
+        this.outputFileName = outputFileName;
     }
 
-
-
-    public String solve() throws IllegalPuzzleException, IOException {
-        FileParser fileParser = new FileParser(inputFile);
+    public String solve() throws IOException {
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser(inputFile, puzzleErrors);
         input = fileParser.parse();
-        PuzzleBoard puzzleBoard = new PuzzleBoard(input);
+        PuzzleBoard puzzleBoard = new PuzzleBoard(input, puzzleErrors);
         try{
             solution = puzzleBoard.getBoard();
             fillOutputFile(this.toString());
