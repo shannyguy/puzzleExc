@@ -64,7 +64,7 @@ public class TestFileParser {
             e.printStackTrace();
         }    
         
-        FileParser fileParser = new FileParser(fileName);
+        FileParser fileParser = new FileParser(fileName, new PuzzleErrors());
             piecesMap = fileParser.parse();
             
            /* assertEquals("Number Of Elements", Integer.parseInt(numElements.split("=")[1].trim()), ExpectednumOfElements);
@@ -91,4 +91,4 @@ public class TestFileParser {
 //
 // happy:
 // 1. empty line or # (V)
-// 2. The elements in file doesn’t need to come in order
+// 2. The elements in file doesnï¿½t need to come in order

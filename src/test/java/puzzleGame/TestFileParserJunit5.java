@@ -2,7 +2,6 @@ package puzzleGame;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static puzzleGame.PuzzleErrors.getErrorsList;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,8 @@ class TestFileParserJunit5 {
     @MethodSource("testFileParserSimpleInput")
     void testFileParserSimple(String fileName, int ExpectednumOfElements, int elementId1, PuzzlePiece expectedPiece1, int elementId2, PuzzlePiece expectedPiece2) {
         Map<Integer, PuzzlePiece> piecesMap;
-        FileParser fileParser = new FileParser(fileName);
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser(fileName, puzzleErrors);
         piecesMap = fileParser.parse();
 
         assertEquals(ExpectednumOfElements, fileParser.getNumberOfElements());
@@ -58,11 +58,11 @@ class TestFileParserJunit5 {
     void testFileParserUnhappyNumOfElements(String fileName, int ExpectednumOfElements, int elementId1, PuzzlePiece expectedPiece1, int elementId2, PuzzlePiece expectedPiece2) {
         Map<Integer, PuzzlePiece> piecesMap;
         boolean errorExist = false;
-
-        FileParser fileParser = new FileParser(fileName);
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser(fileName, puzzleErrors);
         piecesMap = fileParser.parse();
 
-        for (String error : getErrorsList()) {
+        for (String error : puzzleErrors.getErrorsList()) {
             errorExist = true;
         }
         assertTrue(errorExist);
@@ -84,11 +84,11 @@ class TestFileParserJunit5 {
     void testFileParserUnhappyWrongIds(String fileName, int ExpectednumOfElements, int elementId1, PuzzlePiece expectedPiece1, int elementId2, PuzzlePiece expectedPiece2) {
         Map<Integer, PuzzlePiece> piecesMap;
         boolean errorExist = false;
-
-        FileParser fileParser = new FileParser(fileName);
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser(fileName, puzzleErrors);
         piecesMap = fileParser.parse();
 
-        for (String error : getErrorsList()) {
+        for (String error : puzzleErrors.getErrorsList()) {
             errorExist = true;
         }
         assertTrue(errorExist);
@@ -108,11 +108,11 @@ class TestFileParserJunit5 {
     void testFileParserUnhappyMissingElements(String fileName, int ExpectednumOfElements, int elementId1, PuzzlePiece expectedPiece1, int elementId2, PuzzlePiece expectedPiece2) {
         Map<Integer, PuzzlePiece> piecesMap;
         boolean errorExist = false;
-
-        FileParser fileParser = new FileParser(fileName);
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser(fileName, puzzleErrors);
         piecesMap = fileParser.parse();
 
-        for (String error : getErrorsList()) {
+        for (String error : puzzleErrors.getErrorsList()) {
             errorExist = true;
         }
         assertTrue(errorExist);
@@ -133,11 +133,11 @@ class TestFileParserJunit5 {
     void testFileParserUnhappyInvalidElements(String fileName, int ExpectednumOfElements, int elementId1, PuzzlePiece expectedPiece1, int elementId2, PuzzlePiece expectedPiece2) {
         Map<Integer, PuzzlePiece> piecesMap;
         boolean errorExist = false;
-
-        FileParser fileParser = new FileParser(fileName);
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser(fileName, puzzleErrors);
         piecesMap = fileParser.parse();
 
-        for (String error : getErrorsList()) {
+        for (String error : puzzleErrors.getErrorsList()) {
             errorExist = true;
         }
         assertTrue(errorExist);
@@ -182,11 +182,11 @@ class TestFileParserJunit5 {
     void testFileParserUnhappyFileFormat(String fileName, int ExpectednumOfElements, int elementId1, PuzzlePiece expectedPiece1, int elementId2, PuzzlePiece expectedPiece2) {
         Map<Integer, PuzzlePiece> piecesMap;
         boolean errorExist = false;
-
-        FileParser fileParser = new FileParser(fileName);
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser(fileName, puzzleErrors);
         piecesMap = fileParser.parse();
 
-        for (String error : getErrorsList()) {
+        for (String error : puzzleErrors.getErrorsList()) {
             errorExist = true;
         }
         assertTrue(errorExist);
