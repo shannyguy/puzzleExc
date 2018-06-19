@@ -27,6 +27,10 @@ public class PuzzlePiece {
         return edges[3];
     }
 
+    public int[] getEdges(){
+        return edges;
+    }
+
     public boolean isValid(){
         return edges[0] < 2 && edges[0] > -2 && edges[1] < 2 && edges[1] > -2 && edges[2] < 2 && edges[2] > -2 && edges[3] < 2 && edges[3] > -2;
     }

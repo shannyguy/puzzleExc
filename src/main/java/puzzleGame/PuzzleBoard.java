@@ -1,8 +1,10 @@
 package puzzleGame;
 
+import java.io.*;
+import java.net.Socket;
 import java.util.*;
 
-public class PuzzleBoard {
+public class PuzzleBoard implements Runnable{
 
     private Map<Integer, PuzzlePiece> input;
     private PuzzleErrors puzzleErrors;
@@ -10,27 +12,47 @@ public class PuzzleBoard {
     private List<int[]> possibleDimensions;
     private int currentRowsAmount;
     private int[][] board;
+    PuzzleGame puzzleGame;
+    Socket socket;
 
     // Added for TestPuzzleValidator unit tests
-    public PuzzleBoard(Map<Integer, PuzzlePiece> pieces, PuzzleErrors puzzleErrors)  {
+    public PuzzleBoard(Map<Integer, PuzzlePiece> pieces, Socket socket)  {
         input = pieces;
-        this.puzzleErrors = puzzleErrors;
+        this.socket = socket;
     }
 
-    public int[][] getBoard() throws IllegalPuzzleException {
+    private PuzzleSolution getBoard() {
+        PuzzleSolution puzzleSolution = null;
         validateInput();
         if(!puzzleErrors.getErrorsList().isEmpty()){
-            StringBuilder builder = new StringBuilder();
-            for (String error : puzzleErrors.getErrorsList()){
-                builder.append(error + '\n');
+            puzzleSolution = new PuzzleSolution(false);
+            int index = 0;
+            String [] errors = new String[puzzleErrors.getErrorsList().size()];
+            for(String error : puzzleErrors.getErrorsList()){
+                errors[index] = error;
+                index ++;
             }
-            puzzleErrors.clearErrors();
-            throw new IllegalPuzzleException(builder.toString());
+            puzzleSolution.setErrors(errors);
+            return puzzleSolution;
         }
         if(findSolution()){
-            return board;
+            puzzleSolution = new PuzzleSolution(true);
+            int index = 0;
+            int [] solutionPieces = new int [input.size()];
+            for (int i = 0; i< board.length; i++){
+                for (int j = 0; j< board[0].length; j++){
+                    solutionPieces[index] = board[i][j];
+                    index ++;
+                }
+            }
+            Solution solution = new Solution(board.length, solutionPieces);
+            puzzleSolution.setSolution(solution);
+            return puzzleSolution;
+
         }else{
-            throw new IllegalPuzzleException(PuzzleErrors.CANNOT_SOLVE_PUZZLE);
+            puzzleSolution = new PuzzleSolution(false);
+            puzzleSolution.setErrors(new String[]{PuzzleErrors.CANNOT_SOLVE_PUZZLE});
+            return puzzleSolution;
         }
 
     }
@@ -104,6 +126,7 @@ public class PuzzleBoard {
                 }
             }
         }
+        validatePossibleDimensions();
         if(possibleDimensions.isEmpty()){
             puzzleErrors.addError(PuzzleErrors.WRONG_NUMBER_OF_STRAIGHT_EDGES);
             return false;
@@ -177,5 +200,73 @@ public class PuzzleBoard {
         }
 
         return isValid;
+    }
+
+    /**
+     * Checks if dimensions of one row/one column are valid considering the existing corners.
+     */
+    private void validatePossibleDimensions(){
+        boolean foundLeft = false;
+        boolean foundRight = false;
+        boolean foundTop = false;
+        boolean foundBottom = false;
+        if(possibleDimensions.get(0)[0] == 1){
+            while(!foundLeft || !foundRight) {
+                for (Map.Entry<Integer, PuzzlePiece> entry : input.entrySet()) {
+                    if (foundLeft || entry.getValue().getTop() == 0 && entry.getValue().getLeft() == 0 && entry.getValue().getBottom() == 0) {
+                        foundLeft = true;
+                    }else{
+                        if(foundRight || entry.getValue().getTop() == 0 && entry.getValue().getRight() == 0 && entry.getValue().getBottom() == 0){
+                            foundRight = true;
+                        }
+                    }
+                }
+            }
+            if(!foundLeft || !foundRight){
+                possibleDimensions.remove(0);
+            }
+        }
+
+        if(possibleDimensions.get(possibleDimensions.size() - 1)[0] == input.size()){
+            while(!foundTop || !foundBottom) {
+                for (Map.Entry<Integer, PuzzlePiece> entry : input.entrySet()) {
+                    if (foundTop || entry.getValue().getTop() == 0 && entry.getValue().getLeft() == 0 && entry.getValue().getRight() == 0) {
+                        foundTop = true;
+                    }else{
+                        if(foundBottom || entry.getValue().getLeft()== 0 && entry.getValue().getRight() == 0 && entry.getValue().getBottom() == 0){
+                            foundBottom = true;
+                        }
+                    }
+                }
+            }
+            if(!foundTop || !foundBottom){
+                possibleDimensions.remove(possibleDimensions.size() - 1);
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        sendSolution(getBoard());
+
+    }
+
+    public void sendSolution(PuzzleSolution puzzleSolution) {
+        try (PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
+            clientOutput.print(puzzleSolution);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(socket != null && !socket.isClosed()){
+                try {
+                    socket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+        }
     }
 }

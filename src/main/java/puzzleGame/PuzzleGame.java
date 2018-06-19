@@ -1,43 +1,68 @@
 package puzzleGame;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import com.google.gson.Gson;
+import jdk.nashorn.internal.parser.JSONParser;
+import puzzle.client.Puzzle;
+
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PuzzleGame {
 
-    private String inputFile;
     private String outputFileName;
-    private Map<Integer, PuzzlePiece> input;
+    private int threads;
+    private int port;
+    private ServerSocket serverSocket = null;
+    private static String IMMEDIATE_RESPONSE = "\"puzzleReceived\": {\"sessionId\": %s, \"numPieces\": %s }";
 
-    private int[][] solution;
-
-
-    public PuzzleGame(String inputFile, String outputFileName){
-        this.inputFile = inputFile;
-        this.outputFileName = outputFileName;
+    public PuzzleGame(int port, int threads){
+        this.port = port;
+        this.threads = threads;
     }
 
-    public String solve() throws IOException {
-        PuzzleErrors puzzleErrors = new PuzzleErrors();
-        FileParser fileParser = new FileParser(inputFile, puzzleErrors);
-        input = fileParser.parse();
-        PuzzleBoard puzzleBoard = new PuzzleBoard(input, puzzleErrors);
-        try{
-            solution = puzzleBoard.getBoard();
-            fillOutputFile(this.toString());
-
-        }catch (IllegalPuzzleException e){
-            fillOutputFile(e.getMessage());
+    public void init() {
+        int sessionId = 1;
+        ExecutorService executor = Executors.newFixedThreadPool(Integer.valueOf(threads));
+        try {
+            serverSocket = new ServerSocket(port);
+        }catch (Exception e){
+            e.printStackTrace();
+            return;
         }
+        Socket socket = null;
+        try {
+            while (true){
+                socket = serverSocket.accept();
+                try (BufferedReader clientInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
+                 PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
+                    String json = clientInput.readLine();
+                    Gson gson = new Gson(); // Or use new GsonBuilder().create();
+                    Puzzle puzzle = gson.fromJson(json, Puzzle.class); //
+                    int numPieces = puzzle.getPieces().length;
+                    clientOutput.print(String.format(IMMEDIATE_RESPONSE, sessionId, numPieces));
+                    Map<Integer, PuzzlePiece> input = new HashMap<Integer, PuzzlePiece>();
+                    for (int i = 0; i < numPieces; i++) {
+                        PuzzlePiece puzzlePiece = new PuzzlePiece(puzzle.getPieces()[i].getPiece()[0], puzzle.getPieces()[i].getPiece()[1], puzzle.getPieces()[i].getPiece()[2], puzzle.getPieces()[i].getPiece()[3]);
+                        input.put(puzzle.getPieces()[i].getId(), puzzlePiece);
+                    }
+                    PuzzleBoard puzzleBoard = new PuzzleBoard(input, socket);
+                    executor.execute(puzzleBoard);
+                }
+            }
+        } catch (IOException e){
+            if(socket != null && !socket.isClosed()){
+                try {
+                    socket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
 
-        return outputFileName;
-    }
-
-    // Added for TestPuzzleValidator unit tests
-    public Map<Integer, PuzzlePiece> getInput() {
-        return input;
+            }
+        }
     }
 
     private void fillOutputFile(String content) throws IOException {
@@ -47,17 +72,9 @@ public class PuzzleGame {
         writer.close();
     }
 
-    @Override
-    public String toString(){
-        StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < solution.length; i++){
-            for (int j = 0; j < solution[0].length; j++){
-                builder.append(solution[i][j] + " ");
-            }
-            builder.append("\n");
-        }
-        return builder.toString();
-    }
+
+
+
 
 
 }

@@ -1,4 +1,8 @@
-package puzzleGame;
+package puzzle.client;
+
+import com.google.gson.Gson;
+import puzzleGame.PuzzleErrors;
+import puzzleGame.PuzzlePiece;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,24 +31,36 @@ public class FileParser {
     }
 
     // Parse file
-    public Map<Integer, PuzzlePiece> parse() {
+    public String parse() {
         String contentArr[] = writeFileToString();
         int nextLineAfternumberOfElements = readAndValidateNumberOfElements(contentArr);
         if (nextLineAfternumberOfElements < 0) {
             puzzleErrors.addError(String.format(PuzzleErrors.WRONG_NUMBER_OF_ELEMEMNTS_VALUE, numberOfElements));
-            return piecesMap;
+        }else{
+            for (int line = nextLineAfternumberOfElements; line < contentArr.length; line++) {
+                boolean lineWithElement = convertStringToNumbersAndVerifyValue(contentArr[line]);
+                if (!lineWithElement)
+                    continue;
+                boolean elementValidated = validateIdAndElement(lineValues);
+                if (!elementValidated)
+                    continue;
+                createPieceAndSaveToMap();
+            }
+            verifyAllIdsExist();
         }
-        for (int line = nextLineAfternumberOfElements; line < contentArr.length; line++) {
-            boolean lineWithElement = convertStringToNumbersAndVerifyValue(contentArr[line]);
-            if (!lineWithElement)
-                continue;
-            boolean elementValidated = validateIdAndElement(lineValues);
-            if (!elementValidated)
-                continue;
-            createPieceAndSaveToMap();
+        Puzzle puzzle = new Puzzle();
+        int index = 0;
+        Piece [] pieces = new Piece [piecesMap.size()];
+        for (Map.Entry<Integer, PuzzlePiece> entry : piecesMap.entrySet()) {
+            Piece piece = new Piece();
+            piece.setId(entry.getKey());
+            piece.setPiece(entry.getValue().getEdges());
+            pieces[index] = piece;
+            index ++;
         }
-        verifyAllIdsExist();
-        return piecesMap;
+        puzzle.setPieces(pieces);
+        Gson gson = new Gson();
+        return gson.toJson(puzzle);
     }
 
     private String[] writeFileToString() {
