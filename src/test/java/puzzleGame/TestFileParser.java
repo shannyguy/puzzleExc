@@ -67,7 +67,7 @@ public class TestFileParser {
         }    
         
         FileParser fileParser = new FileParser(fileName, new PuzzleErrors());
-            piecesMap = fileParser.parse();
+           // piecesMap = fileParser.parse();
             
            /* assertEquals("Number Of Elements", Integer.parseInt(numElements.split("=")[1].trim()), ExpectednumOfElements);
             assertEquals(piecesMap.get(elementId1).getLeft(), expectedPiece1.getLeft());

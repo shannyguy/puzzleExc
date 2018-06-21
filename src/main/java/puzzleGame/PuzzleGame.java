@@ -43,7 +43,7 @@ public class PuzzleGame {
                     Gson gson = new Gson(); // Or use new GsonBuilder().create();
                     Puzzle puzzle = gson.fromJson(json, Puzzle.class); //
                     int numPieces = puzzle.getPieces().length;
-                    clientOutput.print(String.format(IMMEDIATE_RESPONSE, sessionId, numPieces));
+                    clientOutput.print(String.format(IMMEDIATE_RESPONSE, sessionId++, numPieces));
                     Map<Integer, PuzzlePiece> input = new HashMap<Integer, PuzzlePiece>();
                     for (int i = 0; i < numPieces; i++) {
                         PuzzlePiece puzzlePiece = new PuzzlePiece(puzzle.getPieces()[i].getPiece()[0], puzzle.getPieces()[i].getPiece()[1], puzzle.getPieces()[i].getPiece()[2], puzzle.getPieces()[i].getPiece()[3]);

@@ -1,5 +1,7 @@
 package puzzleGame;
 
+import com.google.gson.Gson;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -253,7 +255,8 @@ public class PuzzleBoard implements Runnable{
 
     public void sendSolution(PuzzleSolution puzzleSolution) {
         try (PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
-            clientOutput.print(puzzleSolution);
+            Gson gson = new Gson();
+            clientOutput.print(gson.toJson(puzzleSolution));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {
