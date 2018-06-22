@@ -16,17 +16,22 @@ public class PuzzleBoard implements Runnable{
     private int[][] board;
     PuzzleGame puzzleGame;
     Socket socket;
+    PrintStream clientOutput;
 
     // Added for TestPuzzleValidator unit tests
-    public PuzzleBoard(Map<Integer, PuzzlePiece> pieces, Socket socket)  {
+    public PuzzleBoard(Map<Integer, PuzzlePiece> pieces, PrintStream clientOutput)  {
         input = pieces;
+
+        // Note we are not using this socket as it is closed when creating PuzzleBoard
         this.socket = socket;
+
+        this.clientOutput = clientOutput;
     }
 
     private PuzzleSolution getBoard() {
         PuzzleSolution puzzleSolution = null;
         validateInput();
-        if(!puzzleErrors.getErrorsList().isEmpty()){
+        if(puzzleErrors!= null && !puzzleErrors.getErrorsList().isEmpty()){
             puzzleSolution = new PuzzleSolution(false);
             int index = 0;
             String [] errors = new String[puzzleErrors.getErrorsList().size()];
@@ -250,16 +255,14 @@ public class PuzzleBoard implements Runnable{
     @Override
     public void run() {
         sendSolution(getBoard());
-
     }
 
     public void sendSolution(PuzzleSolution puzzleSolution) {
-        try (PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
+
+        try /*(PrintStream clientOutput = new PrintStream(socket.getOutputStream(), true, "UTF8");)*/ {
             Gson gson = new Gson();
             clientOutput.print(gson.toJson(puzzleSolution));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }finally {
             if(socket != null && !socket.isClosed()){

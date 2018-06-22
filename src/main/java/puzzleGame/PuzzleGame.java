@@ -1,13 +1,14 @@
 package puzzleGame;
 
 import com.google.gson.Gson;
-import jdk.nashorn.internal.parser.JSONParser;
 import puzzle.client.Puzzle;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,6 +37,7 @@ public class PuzzleGame {
         Socket socket = null;
         try {
             while (true){
+
                 socket = serverSocket.accept();
                 try (BufferedReader clientInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
                  PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
@@ -49,7 +51,7 @@ public class PuzzleGame {
                         PuzzlePiece puzzlePiece = new PuzzlePiece(puzzle.getPieces()[i].getPiece()[0], puzzle.getPieces()[i].getPiece()[1], puzzle.getPieces()[i].getPiece()[2], puzzle.getPieces()[i].getPiece()[3]);
                         input.put(puzzle.getPieces()[i].getId(), puzzlePiece);
                     }
-                    PuzzleBoard puzzleBoard = new PuzzleBoard(input, socket);
+                    PuzzleBoard puzzleBoard = new PuzzleBoard(input, clientOutput);
                     executor.execute(puzzleBoard);
                 }
             }
