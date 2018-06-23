@@ -14,7 +14,7 @@ public class Main {
 
         CliArgs cliArgs = new CliArgs(args);
         String ip = cliArgs.switchValue("-ip", "127.0.0.1");
-        int port = Integer.valueOf(cliArgs.switchValue("-port", "7095"));
+        int port = Integer.valueOf(cliArgs.switchValue("-port", "7869"));
         String inputFileName = cliArgs.switchValue("-input");
         String outputFileName = cliArgs.switchValue("-output");
         FileParser fileParser = new FileParser(inputFileName, new PuzzleErrors());
@@ -25,10 +25,10 @@ public class Main {
               BufferedReader socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
               PrintStream socketOutput = new PrintStream(socket.getOutputStream(), /*autoflush*/ true, "UTF8");){
             String serverLine = "";
+            //serverLine = socketInput.readLine();
             int index = 0;
             socketOutput.println(input);
-            while(index != 2){
-
+            while(index != 100){
                 serverLine = socketInput.readLine();
                 if(serverLine != null){
                     System.out.println(serverLine);

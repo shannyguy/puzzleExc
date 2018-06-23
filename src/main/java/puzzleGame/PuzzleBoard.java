@@ -9,7 +9,7 @@ import java.util.*;
 public class PuzzleBoard implements Runnable{
 
     private Map<Integer, PuzzlePiece> input;
-    private PuzzleErrors puzzleErrors;
+    private PuzzleErrors puzzleErrors = new PuzzleErrors();
     private  Map<Integer, PuzzlePiece> piecesInUse;
     private List<int[]> possibleDimensions;
     private int currentRowsAmount;

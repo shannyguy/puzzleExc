@@ -29,21 +29,22 @@ public class PuzzleGame {
         ExecutorService executor = Executors.newFixedThreadPool(Integer.valueOf(threads));
         try {
             serverSocket = new ServerSocket(port);
+            System.out.println("Conntected on port: " + port);
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("Failed to create new socket: " + e.getMessage());
             return;
         }
         Socket socket = null;
         try {
             while (true){
                 socket = serverSocket.accept();
-                try (BufferedReader clientInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
-                 PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
+                BufferedReader clientInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
+                PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");
                     String json = clientInput.readLine();
                     Gson gson = new Gson(); // Or use new GsonBuilder().create();
                     Puzzle puzzle = gson.fromJson(json, Puzzle.class); //
                     int numPieces = puzzle.getPieces().length;
-                    clientOutput.print(String.format(IMMEDIATE_RESPONSE, sessionId++, numPieces));
+                    clientOutput.println(String.format(IMMEDIATE_RESPONSE, sessionId++, numPieces));
                     Map<Integer, PuzzlePiece> input = new HashMap<Integer, PuzzlePiece>();
                     for (int i = 0; i < numPieces; i++) {
                         PuzzlePiece puzzlePiece = new PuzzlePiece(puzzle.getPieces()[i].getPiece()[0], puzzle.getPieces()[i].getPiece()[1], puzzle.getPieces()[i].getPiece()[2], puzzle.getPieces()[i].getPiece()[3]);
@@ -52,16 +53,10 @@ public class PuzzleGame {
                     PuzzleBoard puzzleBoard = new PuzzleBoard(input, socket);
                     executor.execute(puzzleBoard);
                 }
-            }
-        } catch (IOException e){
-            if(socket != null && !socket.isClosed()){
-                try {
-                    socket.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-
-            }
+            } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
     }
 
