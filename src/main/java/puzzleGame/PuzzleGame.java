@@ -41,6 +41,7 @@ public class PuzzleGame {
                 BufferedReader clientInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
                 PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");
                     String json = clientInput.readLine();
+                    System.out.println(json);
                     Gson gson = new Gson(); // Or use new GsonBuilder().create();
                     Puzzle puzzle = gson.fromJson(json, Puzzle.class); //
                     int numPieces = puzzle.getPieces().length;
@@ -59,17 +60,4 @@ public class PuzzleGame {
             e1.printStackTrace();
         }
     }
-
-    private void fillOutputFile(String content) throws IOException {
-        outputFileName = new Date().getTime() + outputFileName;
-        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFileName, true));
-        writer.write(content);
-        writer.close();
-    }
-
-
-
-
-
-
 }

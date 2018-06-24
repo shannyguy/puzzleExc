@@ -10,12 +10,11 @@ public class PuzzleBoard implements Runnable{
 
     private Map<Integer, PuzzlePiece> input;
     private PuzzleErrors puzzleErrors = new PuzzleErrors();
-    private  Map<Integer, PuzzlePiece> piecesInUse;
+    private Map<Integer, PuzzlePiece> piecesInUse;
     private List<int[]> possibleDimensions;
     private int currentRowsAmount;
     private int[][] board;
-    PuzzleGame puzzleGame;
-    Socket socket;
+    private Socket socket;
 
     // Added for TestPuzzleValidator unit tests
     public PuzzleBoard(Map<Integer, PuzzlePiece> pieces, Socket socket)  {
@@ -75,7 +74,7 @@ public class PuzzleBoard implements Runnable{
         return solved;
     }
 
-    private  boolean solve(int row, int column, Map<Integer, PuzzlePiece> piecesInUse){
+    private synchronized boolean solve(int row, int column, Map<Integer, PuzzlePiece> piecesInUse){
         int requiredLeft = column == 0  ? 0 : Integer.compare(0, input.get( board[row][column - 1]).getRight());;
         int requiredTop = row == 0 ? 0 : Integer.compare(0, input.get( board[row - 1][column]).getBottom());
         boolean requiredFlatRight = column + 1 == board[0].length;
@@ -94,18 +93,17 @@ public class PuzzleBoard implements Runnable{
                     if (piecesInUse.size() == input.size()) {
                         return true;
                     }
-                    if(!solve(column + 1 == board[0].length ? row + 1 : row, column+ 1 == board[0].length ? 0 : column + 1, piecesInUse)){
+                  if(!solve(column + 1 == board[0].length ? row + 1 : row, column+ 1 == board[0].length ? 0 : column + 1, piecesInUse)){
                         piecesInUse.remove(id);
+
                         continue;
                     }else{
+
                         return true;
                     }
-
-
                 }
             }
         }
-
         return false;
     }
 
@@ -253,10 +251,11 @@ public class PuzzleBoard implements Runnable{
 
     }
 
+
     public void sendSolution(PuzzleSolution puzzleSolution) {
         try (PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
             Gson gson = new Gson();
-            clientOutput.print(gson.toJson(puzzleSolution));
+            clientOutput.println(gson.toJson(puzzleSolution));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (IOException e) {

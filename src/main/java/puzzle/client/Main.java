@@ -28,13 +28,18 @@ public class Main {
             //serverLine = socketInput.readLine();
             int index = 0;
             socketOutput.println(input);
-            while(index != 100){
+            while(index != 2){
                 serverLine = socketInput.readLine();
                 if(serverLine != null){
                     System.out.println(serverLine);
                     index ++;
                 }
 
+            }
+            try{
+                socket.close();
+            }catch (Exception e){
+                System.out.println(e.getMessage());
             }
 
 
