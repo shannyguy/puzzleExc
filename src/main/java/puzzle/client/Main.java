@@ -1,21 +1,17 @@
 package puzzle.client;
 
-import com.google.gson.Gson;
 import puzzleGame.PuzzleErrors;
-import puzzleGame.PuzzleSolution;
-
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
         CliArgs cliArgs = new CliArgs(args);
         String ip = cliArgs.switchValue("-ip", "127.0.0.1");
-        int port = Integer.valueOf(cliArgs.switchValue("-port", "7095"));
+        int port = Integer.valueOf(cliArgs.switchValue("-port", "7869"));
         String inputFileName = cliArgs.switchValue("-input");
         String outputFileName = cliArgs.switchValue("-output");
         FileParser fileParser = new FileParser(inputFileName, new PuzzleErrors());

@@ -1,9 +1,7 @@
 package puzzleGame;
 
 import com.google.gson.Gson;
-import jdk.nashorn.internal.parser.JSONParser;
 import puzzle.client.Puzzle;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,7 +11,6 @@ import java.util.concurrent.Executors;
 
 public class PuzzleGame {
 
-    private String outputFileName;
     private int threads;
     private int port;
     private ServerSocket serverSocket = null;

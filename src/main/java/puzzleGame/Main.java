@@ -13,7 +13,7 @@ public class Main {
         System.out.println("Server is up");
         CliArgs cliArgs = new CliArgs(args);
         int threads = Integer.valueOf(cliArgs.switchValue("-threads", "4"));
-        int port = Integer.valueOf(cliArgs.switchValue("-port", "7095"));
+        int port = Integer.valueOf(cliArgs.switchValue("-port", "7869"));
 
         PuzzleGame puzzleGame = new PuzzleGame(Integer.valueOf(port), Integer.valueOf(threads));
         puzzleGame.init();
