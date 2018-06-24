@@ -15,6 +15,10 @@ public class Main {
         int port = Integer.valueOf(cliArgs.switchValue("-port", "7869"));
         String inputFileName = cliArgs.switchValue("-input");
         String outputFileName = cliArgs.switchValue("-output");
+        if(inputFileName == null || outputFileName == null){
+            System.out.println("Error: Command line arguments, must include input and output files!!! ");
+            return;
+        }
         PuzzleErrors puzzleErrors = new PuzzleErrors();
         FileParser fileParser = new FileParser(inputFileName, puzzleErrors);
         String input = fileParser.parse();
