@@ -48,19 +48,22 @@ public class FileParser {
             }
             verifyAllIdsExist();
         }
-        Puzzle puzzle = new Puzzle();
-        int index = 0;
-        Piece [] pieces = new Piece [piecesMap.size()];
-        for (Map.Entry<Integer, PuzzlePiece> entry : piecesMap.entrySet()) {
-            Piece piece = new Piece();
-            piece.setId(entry.getKey());
-            piece.setPiece(entry.getValue().getEdges());
-            pieces[index] = piece;
-            index ++;
+        if(puzzleErrors.getErrorsList().isEmpty()) {
+            Puzzle puzzle = new Puzzle();
+            int index = 0;
+            Piece[] pieces = new Piece[piecesMap.size()];
+            for (Map.Entry<Integer, PuzzlePiece> entry : piecesMap.entrySet()) {
+                Piece piece = new Piece();
+                piece.setId(entry.getKey());
+                piece.setPiece(entry.getValue().getEdges());
+                pieces[index] = piece;
+                index++;
+            }
+            puzzle.setPieces(pieces);
+            Gson gson = new Gson();
+            return gson.toJson(puzzle);
         }
-        puzzle.setPieces(pieces);
-        Gson gson = new Gson();
-        return gson.toJson(puzzle);
+        return(puzzleErrors.toString());
     }
 
     private String[] writeFileToString() {

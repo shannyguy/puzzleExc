@@ -1,6 +1,7 @@
 package puzzle.client;
 
 import puzzleGame.PuzzleErrors;
+
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
@@ -14,13 +15,18 @@ public class Main {
         int port = Integer.valueOf(cliArgs.switchValue("-port", "7869"));
         String inputFileName = cliArgs.switchValue("-input");
         String outputFileName = cliArgs.switchValue("-output");
-        FileParser fileParser = new FileParser(inputFileName, new PuzzleErrors());
+        PuzzleErrors puzzleErrors = new PuzzleErrors();
+        FileParser fileParser = new FileParser("validPuzzle4.txt", puzzleErrors);
         String input = fileParser.parse();
 
+        if (!puzzleErrors.getErrorsList().isEmpty()) {
+            System.out.println(puzzleErrors);
+            return;
+        }
         try ( // try with resource for all the below
-              Socket socket = new Socket(ip, port);
-              BufferedReader socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
-              PrintStream socketOutput = new PrintStream(socket.getOutputStream(), /*autoflush*/ true, "UTF8");) {
+            Socket socket = new Socket(ip, port);
+            BufferedReader socketInput = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF8"));
+            PrintStream socketOutput = new PrintStream(socket.getOutputStream(), /*autoflush*/ true, "UTF8");) {
             String serverLine = "";
             int index = 0;
             String currentTime = "";
@@ -29,16 +35,16 @@ public class Main {
                 serverLine = socketInput.readLine();
                 if (serverLine != null) {
                     Date instant = new Date(System.currentTimeMillis());
-                    SimpleDateFormat sdf = new SimpleDateFormat( "HH:mm:ss" );
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
 
                     if (index == 0) {
-                        System.out.println("Server initial response was received at: " + sdf.format( instant ));
+                        System.out.println("Server initial response was received at: " + sdf.format(instant));
                         System.out.println(serverLine);
                     }
 
                     if (index == 1) { //2nd response from the server
-                        System.out.println("Server second response was received at: " + sdf.format( instant ));
-                        currentTime = sdf.format( instant ).replace(':','-');
+                        System.out.println("Server second response was received at: " + sdf.format(instant));
+                        currentTime = sdf.format(instant).replace(':', '-');
                         System.out.println(serverLine);
                         PrintWriter writer = new PrintWriter(outputFileName + "_" + currentTime + ".txt", "UTF-8");
                         writer.println(serverLine);
