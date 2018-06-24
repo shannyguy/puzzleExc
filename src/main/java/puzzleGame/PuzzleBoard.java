@@ -252,7 +252,7 @@ public class PuzzleBoard implements Runnable{
     }
 
 
-    public void sendSolution(PuzzleSolution puzzleSolution) {
+    private void sendSolution(PuzzleSolution puzzleSolution) {
         try (PrintStream clientOutput = new PrintStream(socket.getOutputStream(), /* autoflush */ true, "UTF8");) {
             Gson gson = new Gson();
             clientOutput.println(gson.toJson(puzzleSolution));
