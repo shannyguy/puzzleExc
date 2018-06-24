@@ -16,7 +16,7 @@ public class Main {
         String inputFileName = cliArgs.switchValue("-input");
         String outputFileName = cliArgs.switchValue("-output");
         PuzzleErrors puzzleErrors = new PuzzleErrors();
-        FileParser fileParser = new FileParser("validPuzzle4.txt", puzzleErrors);
+        FileParser fileParser = new FileParser(inputFileName, puzzleErrors);
         String input = fileParser.parse();
 
         if (!puzzleErrors.getErrorsList().isEmpty()) {
