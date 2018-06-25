@@ -1,4 +1,3 @@
 Known limitations:
-1. Errors may appear in the wrong order
-2. Missing test cases for puzzles that can't be solved
-3. File parser unit tests are not complete
+1. Unit test failures after implementing the client-server logic
+
